@@ -1,0 +1,242 @@
+import java.util.Scanner;
+
+public class PrintTables {
+    private static Employee searchEmployee(Employee[] employees, String id) {
+        if (employees == null || id == null) return null;
+
+        for (Employee employee : employees) {
+            if (employee != null && employee.getId() != null
+                    && employee.getId().equalsIgnoreCase(id)) {
+                return employee;
+            }
+        }
+        return null;
+    }
+
+    private static String fit(String value, int width) {
+        String text = value == null ? "" : value;
+        if (text.length() > width) text = text.substring(0, width);
+        return String.format("%-" + width + "s", text);
+    }
+
+    private static String line(String... values) {
+        StringBuilder result = new StringBuilder();
+        for (String value : values) result.append(value);
+        return result.toString();
+    }
+
+    private static void show(String title, String content, Scanner sc) {
+        ConsoleUI console = new ConsoleUI();
+        console.printResult(title, content, sc);
+    }
+
+    // 1. EVALUATIONS
+    public static void printEvaluations(Employee[] employees, String id, Scanner sc) {
+        Employee employee = searchEmployee(employees, id);
+        StringBuilder content = new StringBuilder();
+
+        if (employee == null) {
+            content.append("Employee not found: ").append(id);
+        } else {
+            content.append(line(
+                    fit("Month", 12), fit("Work", 10), fit("Attitude", 10),
+                    fit("Discipline", 12), fit("Quality", 10), fit("Productivity", 14),
+                    fit("Teamwork", 10), fit("Average", 10))).append('\n');
+            content.append("-".repeat(98)).append('\n');
+
+            Evaluation[] rows = employee.getEvaluations();
+            boolean found = false;
+            if (rows != null) {
+                for (Evaluation e : rows) {
+                    if (e != null) {
+                        content.append(String.format("%-12s %-10.1f %-10.1f %-12.1f %-10.1f %-14.1f %-10.1f %-10.2f%n",
+                                e.getMonth(), e.getWorkScore(), e.getAttitudeScore(),
+                                e.getDisciplineScore(), e.getWorkQuality(), e.getProductivity(),
+                                e.getTeamWork(), e.calculateEvaluationScore()));
+                        found = true;
+                    }
+                }
+            }
+            if (!found) content.append("No evaluation data found.");
+        }
+        show("EVALUATION TABLE - " + id, content.toString(), sc);
+    }
+
+    // 2. CONTRACTS
+    public static void printContracts(Employee[] employees, String id, Scanner sc) {
+        Employee employee = searchEmployee(employees, id);
+        StringBuilder content = new StringBuilder();
+
+        if (employee == null) {
+            content.append("Employee not found: ").append(id);
+        } else {
+            content.append(line(fit("Start Date", 18), fit("End Date", 18),
+                    fit("Contract Type", 25), fit("Status", 20))).append('\n');
+            content.append("-".repeat(81)).append('\n');
+
+            Contract[] rows = employee.getContracts();
+            boolean found = false;
+            if (rows != null) {
+                for (Contract c : rows) {
+                    if (c != null) {
+                        content.append(line(fit(String.valueOf(c.getStartDate()), 18),
+                                fit(String.valueOf(c.getEndDate()), 18),
+                                fit(String.valueOf(c.getType()), 25),
+                                fit(String.valueOf(c.getStatus()), 20))).append('\n');
+                        found = true;
+                    }
+                }
+            }
+            if (!found) content.append("No contract data found.");
+        }
+        show("CONTRACT TABLE - " + id, content.toString(), sc);
+    }
+
+    // 3. PAYROLLS
+    public static void printPayrolls(Employee[] employees, String id, Scanner sc) {
+        Employee employee = searchEmployee(employees, id);
+        StringBuilder content = new StringBuilder();
+
+        if (employee == null) {
+            content.append("Employee not found: ").append(id);
+        } else {
+            content.append(line(fit("Month/Year", 12), fit("Base Salary", 14),
+                    fit("Bonus", 12), fit("Allowance", 12), fit("Deduction", 12),
+                    fit("Overtime Pay", 14), fit("Net Salary", 14))).append('\n');
+            content.append("-".repeat(92)).append('\n');
+
+            Payroll[] rows = employee.getPayrolls();
+            boolean found = false;
+            if (rows != null) {
+                for (Payroll p : rows) {
+                    if (p != null) {
+                        content.append(String.format("%-12s %-14.2f %-12.2f %-12.2f %-12.2f %-14.2f %-14.2f%n",
+                                p.getMonth() + "/" + p.getYear(), p.getBaseSalary(),
+                                p.getBonus(), p.getAllowance(), p.getDeduction(),
+                                p.calculateOvertimePay(), p.calculateNetSalary()));
+                        found = true;
+                    }
+                }
+            }
+            if (!found) content.append("No payroll data found.");
+        }
+        show("PAYROLL TABLE - " + id, content.toString(), sc);
+    }
+
+    // 4. ATTENDANCES
+    public static void printAttendances(Employee[] employees, String id, Scanner sc) {
+        Employee employee = searchEmployee(employees, id);
+        StringBuilder content = new StringBuilder();
+
+        if (employee == null) {
+            content.append("Employee not found: ").append(id);
+        } else {
+            content.append(line(fit("Date", 20), fit("Clock In", 20),
+                    fit("Clock Out", 20), fit("Worked Hours", 16))).append('\n');
+            content.append("-".repeat(76)).append('\n');
+
+            Attendance[] rows = employee.getAttendances();
+            boolean found = false;
+            if (rows != null) {
+                for (Attendance a : rows) {
+                    if (a != null) {
+                        content.append(String.format("%-20s %-20s %-20s %-16.2f%n",
+                                String.valueOf(a.getDate()), String.valueOf(a.getClockIn()),
+                                String.valueOf(a.getClockOut()), a.calculateWorkedHours()));
+                        found = true;
+                    }
+                }
+            }
+            if (!found) content.append("No attendance data found.");
+        }
+        show("ATTENDANCE TABLE - " + id, content.toString(), sc);
+    }
+
+    // 5. ABSENCES
+    public static void printAbsences(Employee[] employees, String id, Scanner sc) {
+        Employee employee = searchEmployee(employees, id);
+        StringBuilder content = new StringBuilder();
+
+        if (employee == null) {
+            content.append("Employee not found: ").append(id);
+        } else {
+            content.append(line(fit("Reason", 35), fit("From Date", 18),
+                    fit("To Date", 18), fit("Status", 16))).append('\n');
+            content.append("-".repeat(87)).append('\n');
+
+            Absence[] rows = employee.getAbsences();
+            boolean found = false;
+            if (rows != null) {
+                for (Absence a : rows) {
+                    if (a != null) {
+                        content.append(line(fit(a.getReason(), 35),
+                                fit(String.valueOf(a.getFromDate()), 18),
+                                fit(String.valueOf(a.getToDate()), 18),
+                                fit(String.valueOf(a.getStatus()), 16))).append('\n');
+                        found = true;
+                    }
+                }
+            }
+            if (!found) content.append("No absence data found.");
+        }
+        show("ABSENCE TABLE - " + id, content.toString(), sc);
+    }
+
+    // 6. RESIGNATIONS
+    public static void printResignations(Employee[] employees, String id, Scanner sc) {
+        Employee employee = searchEmployee(employees, id);
+        StringBuilder content = new StringBuilder();
+
+        if (employee == null) {
+            content.append("Employee not found: ").append(id);
+        } else {
+            content.append(line(fit("Reason", 45), fit("Date", 20),
+                    fit("Status", 18))).append('\n');
+            content.append("-".repeat(83)).append('\n');
+
+            Resignation[] rows = employee.getResignations();
+            boolean found = false;
+            if (rows != null) {
+                for (Resignation r : rows) {
+                    if (r != null) {
+                        content.append(line(fit(r.getReason(), 45),
+                                fit(String.valueOf(r.getDate()), 20),
+                                fit(String.valueOf(r.getStatus()), 18))).append('\n');
+                        found = true;
+                    }
+                }
+            }
+            if (!found) content.append("No resignation data found.");
+        }
+        show("RESIGNATION TABLE - " + id, content.toString(), sc);
+    }
+
+    // 7. INSURANCES
+    public static void printInsurances(Employee[] employees, String id, Scanner sc) {
+        Employee employee = searchEmployee(employees, id);
+        StringBuilder content = new StringBuilder();
+
+        if (employee == null) {
+            content.append("Employee not found: ").append(id);
+        } else {
+            content.append(line(fit("Insurance Number", 22), fit("Type", 20),
+                    fit("Start Date", 18), fit("End Date", 18), fit("Rate", 12))).append('\n');
+            content.append("-".repeat(90)).append('\n');
+
+            Insurance[] rows = employee.getInsurances();
+            boolean found = false;
+            if (rows != null) {
+                for (Insurance i : rows) {
+                    if (i != null) {
+                        content.append(String.format("%-22s %-20s %-18s %-18s %-12.2f%n",
+                                i.getInsuranceNumber(), i.getType(), i.getStartDate(),
+                                i.getEndDate(), i.getRate()));
+                        found = true;
+                    }
+                }
+            }
+            if (!found) content.append("No insurance data found.");
+        }
+        show("INSURANCE TABLE - " + id, content.toString(), sc);
+    }
+}

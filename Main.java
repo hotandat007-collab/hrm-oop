@@ -112,7 +112,7 @@ public class Main {
         { "Employee", "Evaluation", "Contract", "Payroll", "Attendance", "Insurance", "Position", "Department" },
         { "Employees", "Departments", "Positions", "Payrolls", "Evaluations", "Contracts",
             "Attendances", "Absences", "Resignations", "Insurances" },
-        { "Search employee", "Search department" },
+        { "Search employee","Search department", "Search Position" },
         { "Edit employee" },
         { "Employee" },
         { "Reply request" }
@@ -234,8 +234,10 @@ public class Main {
         case 23:
           account.searchDepartment(data.getDepartments(), sc);
           break;
-
         case 24:
+          account.searchPosition(data.getPositions(), sc);
+          break;
+        case 25:
           title = "Edit Employee";
           subtitle = "";
           String[] editOptions = {};
@@ -245,7 +247,7 @@ public class Main {
           account.editEmployee(sc, data.getEmployees(), id, data.getPositions(), data.getDepartments());
           break;
 
-        case 25:
+        case 26:
           title = "Remove Employee";
           subtitle = "";
           String[] removeOptions = {};
@@ -256,7 +258,7 @@ public class Main {
           account.removeAccount(data.getAccounts(), removeEmployee, sc);
           break;
 
-        case 26:
+        case 27:
           title = "Reply to username: ";
           subtitle = "";
           content = "";
@@ -269,7 +271,7 @@ public class Main {
 
           account.replyRequest(data.getAccounts(), replyUsername, reply, sc);
           break;
-
+      
         default:
           title = "Admin Account";
           console.printResult(title, "Invalid choice", sc);

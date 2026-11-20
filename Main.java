@@ -269,7 +269,9 @@ public class Main {
 
           account.replyRequest(data.getAccounts(), replyUsername, reply, sc);
           break;
-
+        case 27:
+    account.searchPosition(data.getPositions(), sc);
+    break;
         default:
           title = "Admin Account";
           console.printResult(title, "Invalid choice", sc);
